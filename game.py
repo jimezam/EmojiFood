@@ -1,3 +1,4 @@
+# v1
 import pygame
 import pygame.camera
 from pygame.locals import *
@@ -5,16 +6,21 @@ from src.Food import Food
 from src.Bug import Bug
 from src.Player import Player
 
-# https://openmoji.org/library/
-# $ ffmpeg -i cat-crashed-1.mp3 cat-crashed-x.mp3
+# v2
+import cv2
+import numpy as np
 
 ##############################################################
 
 WINDOW_WIDTH = 640
 WINDOW_HEIGHT = 480
+
 size = (WINDOW_WIDTH, WINDOW_HEIGHT)
+
 FOOD_COUNT = 3
 BUG_COUNT = 4
+
+faceDetection = False
 
 ##############################################################
 
@@ -68,6 +74,13 @@ allSprites.add(player)
 
 ##############################################################
 
+# v2
+
+classificator = cv2.CascadeClassifier(
+    cv2.data.haarcascades+'haarcascade_frontalface_default.xml')
+
+##############################################################
+
 # create a surface to capture to.  for performance purposes
 # bit depth is the same as that of the display surface.
 
@@ -83,6 +96,24 @@ while running:
     snapshot = pygame.transform.flip(snapshot, True, False)
 
     display.blit(snapshot, (0,0))
+
+    ##############################################################
+
+    # v2
+
+    if(faceDetection):
+        frame = pygame.surfarray.array3d(snapshot)
+        frame = frame.swapaxes(0,1)
+
+        # frame = cv2.flip(frame, 1)
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        faces = classificator.detectMultiScale(gray, 1.1, 5)
+
+        for (x,y,w,h) in faces:
+            player.moveTo(x+w/2, y+h/2)
+            break
 
     ##############################################################
 
@@ -123,9 +154,12 @@ while running:
     for e in events:
         if e.type == QUIT or (e.type == KEYDOWN and e.key == K_q):
             running = False
+        if e.type == KEYDOWN and e.key == K_f:
+            faceDetection = not faceDetection
+            print(f"Face detection is: {faceDetection}")
 
     keys = pygame.key.get_pressed()
-    
+
     if(keys[K_LEFT] or keys[K_RIGHT] or
        keys[K_UP] or keys[K_DOWN]):
         player.move(keys)

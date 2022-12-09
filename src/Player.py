@@ -16,15 +16,8 @@ class Player (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 80
         self.rect.y = (self.height - self.rect.height)/2
-        # # TODO
-        # self.speed_x = random.randrange(1, 3)
-
-    # def update(self):
-    #     self.rect.x -= self.speed_x
 
     def move(self, keys):
-        # currentPosition = self.rect
-
         if(keys[K_LEFT] and self.rect.x > 0):
             self.rect.x -= self.step
 
@@ -37,6 +30,5 @@ class Player (pygame.sprite.Sprite):
         if(keys[K_DOWN] and self.rect.y < self.height - self.rect.height):
             self.rect.y += self.step
 
-        # if(self.rect.x < 0 or self.rect.x > self.width or
-        #    self.rect.y < 0 or self.rect.y > self.height):
-        #     self.rect = currentPosition
+    def moveTo(self, centerX, centerY):
+        self.rect.center = (centerX, centerY)
