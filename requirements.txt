@@ -1,6 +1,6 @@
 autopep8==2.0.0
 numpy==1.23.5
-opencv-contrib-python==4.6.0.66
+opencv-contrib-python==4.8.1.78
 pycodestyle==2.10.0
 pygame==2.1.2
 tomli==2.0.1
